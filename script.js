@@ -1,78 +1,131 @@
-function login() {
+function login(){
 
-    var u = document.getElementById("user").value;
-    var p = document.getElementById("pass").value;
+var u = document.getElementById("user").value;
+var p = document.getElementById("pass").value;
 
-    if (u == "admin" && p == "123") {
+if(u=="admin" && p=="123"){
 
-        localStorage.setItem("user", u);
+localStorage.setItem("user",u);
 
-        document.body.innerHTML = `
-        <div class="sidebar">
-            <h2>Menu</h2>
+/* chỉ cho 1 máy login */
+localStorage.setItem("loginTime",Date.now());
 
-            <button onclick="showPage('home')">Dashboard</button>
-            <button onclick="showPage('profile')">Profile</button>
-            <button onclick="showPage('settings')">Settings</button>
-            <button onclick="logout()">Logout</button>
+loadAdmin();
 
-        </div>
+}else{
 
-        <div class="content" id="content">
-            <h1>Dashboard</h1>
-            <p>Chào ${u}</p>
-        </div>
-        `;
+alert("Sai tài khoản");
 
-    } else {
-
-        alert("Sai tài khoản");
-
-    }
+}
 
 }
 
 
 
-function showPage(page) {
+function loadAdmin(){
 
-    var content = document.getElementById("content");
+var u = localStorage.getItem("user");
 
-    if (page == "home") {
+document.body.innerHTML=`
 
-        content.innerHTML = `
-        <h1>Dashboard</h1>
-        <p>Trang chính</p>
-        `;
+<div class="sidebar">
 
-    }
+<h2>Menu</h2>
 
-    if (page == "profile") {
+<button onclick="showPage('home')">Dashboard</button>
+<button onclick="showPage('profile')">Profile</button>
+<button onclick="showPage('settings')">Settings</button>
+<button onclick="logout()">Logout</button>
 
-        content.innerHTML = `
-        <h1>Profile</h1>
-        <p>Thông tin người dùng</p>
-        `;
+</div>
 
-    }
+<div class="header">
 
-    if (page == "settings") {
+Xin chào ${u}
 
-        content.innerHTML = `
-        <h1>Settings</h1>
-        <p>Cài đặt hệ thống</p>
-        `;
+</div>
 
-    }
+<div class="content" id="content">
+
+<h1>Dashboard</h1>
+
+</div>
+
+`;
+
+}
+
+
+
+function showPage(p){
+
+var c=document.getElementById("content");
+
+if(p=="home"){
+
+c.innerHTML="<h1>Dashboard</h1>";
+
+}
+
+if(p=="profile"){
+
+c.innerHTML="<h1>Profile</h1>";
+
+}
+
+if(p=="settings"){
+
+c.innerHTML="<h1>Settings</h1>";
+
+}
 
 }
 
 
 
-function logout() {
+function logout(){
 
-    localStorage.removeItem("user");
+localStorage.removeItem("user");
+localStorage.removeItem("loginTime");
 
-    location.reload();
+location.reload();
 
 }
+
+
+
+/* tự login */
+
+window.onload=function(){
+
+var u=localStorage.getItem("user");
+
+if(u){
+
+loadAdmin();
+
+}
+
+}
+
+
+
+/* kiểm tra login 1 máy */
+
+setInterval(function(){
+
+var t=localStorage.getItem("loginTime");
+
+if(t){
+
+if(Date.now()-t>10000){
+
+alert("Đăng nhập ở máy khác");
+
+logout();
+
+}
+
+}
+
+},3000);
