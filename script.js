@@ -1,4 +1,4 @@
-
+console.log("script chạy");
 // ===== DATABASE =====
 
 var db = JSON.parse(localStorage.getItem("db")) || {
@@ -221,3 +221,4 @@ document.getElementById("app").innerHTML = `
 // ===== START =====
 
 render();
+
