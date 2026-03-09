@@ -18,6 +18,87 @@ localStorage.setItem("db",JSON.stringify(db));
 }
 
 
+// ===== FAKE API =====
+
+function delay(){
+
+return new Promise(r=>setTimeout(r,300));
+
+}
+
+
+var api = {
+
+async login(user,pass){
+
+await delay();
+
+if(user=="admin" && pass=="123"){
+
+var token = "token123";
+
+localStorage.setItem("token",token);
+
+return {ok:true,token};
+
+}
+
+return {ok:false};
+
+},
+
+
+async getUsers(){
+
+await delay();
+
+return db.users;
+
+},
+
+
+async addUser(name){
+
+await delay();
+
+db.users.push({
+
+id:db.uid++,
+name:name
+
+});
+
+saveDB();
+
+},
+
+
+async deleteUser(id){
+
+await delay();
+
+db.users = db.users.filter(x=>x.id!=id);
+
+saveDB();
+
+},
+
+
+async editUser(id,name){
+
+await delay();
+
+var u = db.users.find(x=>x.id==id);
+
+u.name = name;
+
+saveDB();
+
+}
+
+};
+
+
 // ===== ROUTER =====
 
 function go(page){
@@ -31,14 +112,15 @@ render();
 
 // ===== LOGIN =====
 
-function login(){
+async function login(){
 
 var u = document.getElementById("user").value;
 var p = document.getElementById("pass").value;
 
-if(u=="admin" && p=="123"){
+var r = await api.login(u,p);
 
-localStorage.setItem("login","yes");
+if(r.ok){
+
 go("home");
 
 }else{
@@ -62,9 +144,9 @@ location.reload();
 
 // ===== RENDER =====
 
-function render(){
+async function render(){
 
-if(localStorage.getItem("login")!="yes"){
+if(!localStorage.getItem("token")){
 
 showLogin();
 return;
@@ -74,14 +156,28 @@ return;
 var page = localStorage.getItem("page") || "home";
 
 document.getElementById("app").innerHTML =
-
 menu() +
+`<div id="main">Loading...</div>`;
 
-`<div id="main">`+
+if(page=="home"){
 
-pages(page)+
+show("Home");
 
-`</div>`;
+}
+
+if(page=="users"){
+
+var users = await api.getUsers();
+
+showUsers(users);
+
+}
+
+if(page=="data"){
+
+show(JSON.stringify(db,null,2));
+
+}
 
 }
 
@@ -98,7 +194,6 @@ return `
 
 <button onclick="go('home')">Home</button>
 <button onclick="go('users')">Users</button>
-<button onclick="go('posts')">Posts</button>
 <button onclick="go('data')">Data</button>
 <button onclick="logout()">Logout</button>
 
@@ -109,26 +204,26 @@ return `
 }
 
 
-// ===== PAGES =====
+// ===== SHOW =====
 
-function pages(p){
+function show(html){
 
-if(p=="home"){
-
-return "<h2>Home</h2>";
+document.getElementById("main").innerHTML = html;
 
 }
 
 
-if(p=="users"){
+// ===== USERS =====
 
-return `
+function showUsers(users){
+
+show(`
 
 <h2>Users</h2>
 
-<button onclick="addUser()">Add User</button>
+<button onclick="addUser()">Add</button>
 
-<table border="1" cellpadding="5">
+<table border=1>
 
 <tr>
 <th>ID</th>
@@ -136,18 +231,16 @@ return `
 <th>Action</th>
 </tr>
 
-${db.users.map(u=>`
+${users.map(u=>`
 
 <tr>
 
 <td>${u.id}</td>
-
 <td>${u.name}</td>
 
 <td>
 
 <button onclick="editUser(${u.id})">Edit</button>
-
 <button onclick="deleteUser(${u.id})">Delete</button>
 
 </td>
@@ -158,156 +251,45 @@ ${db.users.map(u=>`
 
 </table>
 
-`;
+`);
 
 }
 
 
-if(p=="posts"){
+// ===== ACTIONS =====
 
-return `
+async function addUser(){
 
-<h2>Posts</h2>
-
-<button onclick="addPost()">Add Post</button>
-
-<table border="1" cellpadding="5">
-
-<tr>
-<th>ID</th>
-<th>Title</th>
-<th>Action</th>
-</tr>
-
-${db.posts.map(p=>`
-
-<tr>
-
-<td>${p.id}</td>
-
-<td>${p.title}</td>
-
-<td>
-
-<button onclick="editPost(${p.id})">Edit</button>
-
-<button onclick="deletePost(${p.id})">Delete</button>
-
-</td>
-
-</tr>
-
-`).join("")}
-
-</table>
-
-`;
-
-}
-
-
-if(p=="data"){
-
-return "<pre>"+JSON.stringify(db,null,2)+"</pre>";
-
-}
-
-}
-
-
-// ===== USER =====
-
-function addUser(){
-
-var name = prompt("Tên");
+var name = prompt("Name");
 
 if(!name) return;
 
-db.users.push({
+await api.addUser(name);
 
-id:db.uid++,
-name:name
-
-});
-
-saveDB();
 render();
 
 }
 
 
-function editUser(id){
+async function deleteUser(id){
 
-var u = db.users.find(x=>x.id==id);
+if(!confirm("Xóa?")) return;
 
-var name = prompt("Tên mới",u.name);
+await api.deleteUser(id);
+
+render();
+
+}
+
+
+async function editUser(id){
+
+var name = prompt("Name");
 
 if(!name) return;
 
-u.name = name;
+await api.editUser(id,name);
 
-saveDB();
-render();
-
-}
-
-
-function deleteUser(id){
-
-if(!confirm("Xóa?")) return;
-
-db.users = db.users.filter(x=>x.id!=id);
-
-saveDB();
-render();
-
-}
-
-
-// ===== POST =====
-
-function addPost(){
-
-var t = prompt("Title");
-
-if(!t) return;
-
-db.posts.push({
-
-id:db.pid++,
-title:t
-
-});
-
-saveDB();
-render();
-
-}
-
-
-function editPost(id){
-
-var p = db.posts.find(x=>x.id==id);
-
-var t = prompt("Title",p.title);
-
-if(!t) return;
-
-p.title = t;
-
-saveDB();
-render();
-
-}
-
-
-function deletePost(id){
-
-if(!confirm("Xóa?")) return;
-
-db.posts = db.posts.filter(x=>x.id!=id);
-
-saveDB();
 render();
 
 }
@@ -321,8 +303,7 @@ document.getElementById("app").innerHTML = `
 
 <h2>Login</h2>
 
-<input id="user" placeholder="user">
-
+<input id="user">
 <input id="pass" type="password">
 
 <button onclick="login()">Login</button>
