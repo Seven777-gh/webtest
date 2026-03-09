@@ -7,10 +7,8 @@ if(u=="admin" && p=="123"){
 
 localStorage.setItem("user",u);
 
-/* lưu id phiên đăng nhập */
-var id = Date.now();
-
-localStorage.setItem("sessionId",id);
+/* đánh dấu phiên đăng nhập */
+localStorage.setItem("loginKey","12345");
 
 loadAdmin();
 
@@ -21,7 +19,6 @@ alert("Sai tài khoản");
 }
 
 }
-
 
 
 function loadAdmin(){
@@ -63,17 +60,9 @@ function showPage(p){
 
 var c=document.getElementById("content");
 
-if(p=="home"){
-c.innerHTML="<h1>Dashboard</h1>";
-}
-
-if(p=="profile"){
-c.innerHTML="<h1>Profile</h1>";
-}
-
-if(p=="settings"){
-c.innerHTML="<h1>Settings</h1>";
-}
+if(p=="home") c.innerHTML="<h1>Dashboard</h1>";
+if(p=="profile") c.innerHTML="<h1>Profile</h1>";
+if(p=="settings") c.innerHTML="<h1>Settings</h1>";
 
 }
 
@@ -82,7 +71,7 @@ c.innerHTML="<h1>Settings</h1>";
 function logout(){
 
 localStorage.removeItem("user");
-localStorage.removeItem("sessionId");
+localStorage.removeItem("loginKey");
 
 location.reload();
 
@@ -97,27 +86,9 @@ window.onload=function(){
 var u=localStorage.getItem("user");
 
 if(u){
+
 loadAdmin();
-}
 
 }
 
-
-
-/* kiểm tra login 1 máy thật */
-
-var mySession = localStorage.getItem("sessionId");
-
-setInterval(function(){
-
-var current = localStorage.getItem("sessionId");
-
-if(mySession && current && mySession!=current){
-
-alert("Tài khoản đăng nhập ở máy khác");
-
-logout();
-
-}
-
-},2000);
+};
