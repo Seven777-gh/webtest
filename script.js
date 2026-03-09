@@ -7,8 +7,10 @@ if(u=="admin" && p=="123"){
 
 localStorage.setItem("user",u);
 
-/* chỉ cho 1 máy login */
-localStorage.setItem("loginTime",Date.now());
+/* lưu id phiên đăng nhập */
+var id = Date.now();
+
+localStorage.setItem("sessionId",id);
 
 loadAdmin();
 
@@ -62,21 +64,15 @@ function showPage(p){
 var c=document.getElementById("content");
 
 if(p=="home"){
-
 c.innerHTML="<h1>Dashboard</h1>";
-
 }
 
 if(p=="profile"){
-
 c.innerHTML="<h1>Profile</h1>";
-
 }
 
 if(p=="settings"){
-
 c.innerHTML="<h1>Settings</h1>";
-
 }
 
 }
@@ -86,7 +82,7 @@ c.innerHTML="<h1>Settings</h1>";
 function logout(){
 
 localStorage.removeItem("user");
-localStorage.removeItem("loginTime");
+localStorage.removeItem("sessionId");
 
 location.reload();
 
@@ -94,38 +90,34 @@ location.reload();
 
 
 
-/* tự login */
+/* auto login */
 
 window.onload=function(){
 
 var u=localStorage.getItem("user");
 
 if(u){
-
 loadAdmin();
-
 }
 
 }
 
 
 
-/* kiểm tra login 1 máy */
+/* kiểm tra login 1 máy thật */
+
+var mySession = localStorage.getItem("sessionId");
 
 setInterval(function(){
 
-var t=localStorage.getItem("loginTime");
+var current = localStorage.getItem("sessionId");
 
-if(t){
+if(mySession && current && mySession!=current){
 
-if(Date.now()-t>10000){
-
-alert("Đăng nhập ở máy khác");
+alert("Tài khoản đăng nhập ở máy khác");
 
 logout();
 
 }
 
-}
-
-},3000);
+},2000);
