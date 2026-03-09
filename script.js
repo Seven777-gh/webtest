@@ -33,6 +33,7 @@ function login() {
 }
 
 
+
 function showPage(page) {
 
     var content = document.getElementById("content");
@@ -67,6 +68,7 @@ function showPage(page) {
 }
 
 
+
 function logout() {
 
     localStorage.removeItem("user");
@@ -74,4 +76,3 @@ function logout() {
     location.reload();
 
 }
-
