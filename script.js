@@ -1,21 +1,4 @@
-/* ===== DATABASE ===== */
-
-var db = JSON.parse(localStorage.getItem("db")) || {
-
-users:[],
-posts:[]
-
-};
-
-function saveDB(){
-
-localStorage.setItem("db",JSON.stringify(db));
-
-}
-
-
-
-/* ===== LOGIN ===== */
+// ===== LOGIN =====
 
 function login(){
 
@@ -24,196 +7,128 @@ var p = document.getElementById("pass").value;
 
 if(u=="admin" && p=="123"){
 
-localStorage.setItem("user",u);
+localStorage.setItem("login","yes");
 
-loadAdmin();
+location.reload();
 
 }else{
 
-alert("Sai tài khoản");
+alert("Sai");
 
 }
 
 }
 
 
+// ===== CHECK LOGIN =====
 
-/* ===== LOAD ADMIN ===== */
+if(localStorage.getItem("login")=="yes"){
 
-function loadAdmin(){
+showAdmin();
 
-var u = localStorage.getItem("user");
+}
 
-document.body.innerHTML=`
 
-<div class="sidebar">
+// ===== DATABASE =====
 
-<h2>Menu</h2>
+var db = JSON.parse(localStorage.getItem("db")) || {
 
-<button onclick="showPage('home')">Dashboard</button>
+users:[],
+posts:[]
 
-<button onclick="showPage('data')">Data</button>
+};
 
-<button onclick="showPage('profile')">Profile</button>
+saveDB();
+
+function saveDB(){
+
+localStorage.setItem("db",JSON.stringify(db));
+
+}
+
+
+// ===== ADMIN UI =====
+
+function showAdmin(){
+
+document.body.innerHTML = `
+
+<h2>ADMIN</h2>
 
 <button onclick="logout()">Logout</button>
 
-</div>
+<button onclick="addUser()">Add User</button>
 
-<div class="header">
+<button onclick="addPost()">Add Post</button>
 
-Xin chào ${u}
+<button onclick="showData()">Data</button>
 
-</div>
-
-<div class="content" id="content">
-
-<h1>Dashboard</h1>
-
-</div>
+<div id="out"></div>
 
 `;
 
 }
 
 
-
-/* ===== SHOW PAGE ===== */
-
-function showPage(p){
-
-var c=document.getElementById("content");
-
-if(p=="home"){
-
-c.innerHTML="<h1>Dashboard</h1>";
-
-}
-
-if(p=="data"){
-
-showData();
-
-}
-
-if(p=="profile"){
-
-c.innerHTML="<h1>Profile</h1>";
-
-}
-
-}
-
-
-
-/* ===== LOGOUT ===== */
+// ===== LOGOUT =====
 
 function logout(){
 
-localStorage.removeItem("user");
+localStorage.clear();
 
 location.reload();
 
 }
 
 
-
-/* ===== AUTO LOGIN ===== */
-
-window.onload=function(){
-
-var u=localStorage.getItem("user");
-
-if(u){
-
-loadAdmin();
-
-}
-
-};
-
-
-
-/* ===== DATA PAGE ===== */
-
-function showData(){
-
-var html="";
-
-html+=`
-
-<h2>Users</h2>
-
-<input id="newUser" placeholder="name">
-
-<button onclick="addUser()">Add</button>
-
-<div id="list"></div>
-
-`;
-
-document.getElementById("content").innerHTML=html;
-
-renderUsers();
-
-}
-
-
-
-/* ===== ADD USER ===== */
+// ===== ADD USER =====
 
 function addUser(){
 
-var name=document.getElementById("newUser").value;
+var name = prompt("Tên user");
 
-if(name=="") return;
+if(!name) return;
 
-db.users.push(name);
+db.users.push({
 
-saveDB();
+name:name
 
-renderUsers();
-
-}
-
-
-
-/* ===== SHOW USERS ===== */
-
-function renderUsers(){
-
-var html="";
-
-for(var i=0;i<db.users.length;i++){
-
-html+=`
-
-<p>
-
-${db.users[i]}
-
-<button onclick="delUser(${i})">X</button>
-
-</p>
-
-`;
-
-}
-
-document.getElementById("list").innerHTML=html;
-
-}
-
-
-
-/* ===== DELETE USER ===== */
-
-function delUser(i){
-
-db.users.splice(i,1);
+});
 
 saveDB();
 
-renderUsers();
+alert("Đã thêm user");
+
+}
+
+
+// ===== ADD POST =====
+
+function addPost(){
+
+var title = prompt("Tiêu đề");
+
+if(!title) return;
+
+db.posts.push({
+
+title:title
+
+});
+
+saveDB();
+
+alert("Đã thêm post");
+
+}
+
+
+// ===== SHOW DATA =====
+
+function showData(){
+
+document.getElementById("out").innerHTML =
+
+"<pre>"+JSON.stringify(db,null,2)+"</pre>";
 
 }
