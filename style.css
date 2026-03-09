@@ -6,45 +6,45 @@ color:white;
 }
 
 
-/* ===== LOGIN ===== */
+/* ===== CENTER LOGIN ===== */
 
 .loginBox{
 
 width:320px;
-margin:120px auto;
 background:#1e293b;
 padding:25px;
 border-radius:12px;
 text-align:center;
 box-shadow:0 0 15px black;
 
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+
 }
 
-.loginBox h2{
-
-margin-bottom:10px;
-
-}
 
 .loginBox input{
 
 width:100%;
-margin:6px 0;
-padding:8px;
+margin:8px 0;
+padding:10px;
 border:none;
-border-radius:5px;
+border-radius:6px;
 
 }
 
+
 button{
 
-padding:8px;
+padding:10px;
 width:100%;
 border:none;
 background:#3b82f6;
 color:white;
 cursor:pointer;
-border-radius:5px;
+border-radius:6px;
 
 }
 
@@ -64,16 +64,16 @@ height:100vh;
 background:#020617;
 position:fixed;
 padding:10px;
-box-shadow:2px 0 5px black;
 
 }
+
 
 .sidebar h2{
 
 color:#38bdf8;
-text-align:center;
 
 }
+
 
 .sidebar button{
 
@@ -82,6 +82,7 @@ margin:5px 0;
 background:#1e293b;
 
 }
+
 
 .sidebar button:hover{
 
@@ -97,7 +98,6 @@ background:#334155;
 margin-left:220px;
 background:#020617;
 padding:10px;
-font-weight:bold;
 border-bottom:1px solid #334155;
 
 }
@@ -112,8 +112,6 @@ padding:20px;
 
 }
 
-
-/* ===== TITLE ===== */
 
 h1{
 
