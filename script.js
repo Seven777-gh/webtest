@@ -1,72 +1,95 @@
-function showLogin() {
-
-document.getElementById("app").innerHTML = `
-<div class="center">
-
-<div class="box">
-
-<h2>Login</h2>
-
-<input id="user" placeholder="User"><br>
-<input id="pass" type="password" placeholder="Pass"><br>
-
-<button onclick="login()">Login</button>
-
-<p id="msg"></p>
-
-</div>
-</div>
-`;
-
-}
-
 function login() {
 
-let u = document.getElementById("user").value;
-let p = document.getElementById("pass").value;
+    var u = document.getElementById("user").value;
+    var p = document.getElementById("pass").value;
 
-if (u == "admin" && p == "123") {
+    if (u == "admin" && p == "123") {
 
-localStorage.setItem("login", "yes");
+        localStorage.setItem("user", u);
 
-showDashboard();
+        document.body.innerHTML = `
+        
+        <div class="sidebar">
+            <h2>Menu</h2>
+            <button onclick="showPage('home')">Dashboard</button>
+            <button onclick="showPage('profile')">Profile</button>
+            <button onclick="showPage('settings')">Settings</button>
+            <button onclick="logout()">Logout</button>
+        </div>
 
-} else {
+        <div class="content" id="content">
+            <h1>Dashboard</h1>
+            <p>Chào ${u}</p>
+        </div>
 
-document.getElementById("msg").innerText = "Sai";
+        `;
 
-}
+    } else {
 
-}
+        alert("Sai tài khoản");
 
-function showDashboard() {
-
-document.getElementById("app").innerHTML = `
-
-<h1>Dashboard</h1>
-
-<button onclick="logout()">Logout</button>
-
-<p>Chào admin</p>
-
-`;
-
-}
-
-function logout() {
-
-localStorage.removeItem("login");
-
-showLogin();
+    }
 
 }
 
-if (localStorage.getItem("login") == "yes") {
 
-showDashboard();
+function showPage(p){
 
-} else {
+    if(p=="home"){
 
-showLogin();
+        document.getElementById("content").innerHTML =
+        "<h1>Dashboard</h1>";
+
+    }
+
+    if(p=="profile"){
+
+        document.getElementById("content").innerHTML =
+        "<h1>Profile</h1>";
+
+    }
+
+    if(p=="settings"){
+
+        document.getElementById("content").innerHTML =
+        "<h1>Settings</h1>";
+
+    }
+
+}
+
+
+function logout(){
+
+    localStorage.removeItem("user");
+    location.reload();
+
+}
+
+
+window.onload = function(){
+
+    var u = localStorage.getItem("user");
+
+    if(u){
+
+        document.body.innerHTML = `
+        
+        <div class="sidebar">
+            <h2>Menu</h2>
+            <button onclick="showPage('home')">Dashboard</button>
+            <button onclick="showPage('profile')">Profile</button>
+            <button onclick="showPage('settings')">Settings</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+
+        <div class="content" id="content">
+            <h1>Dashboard</h1>
+            <p>Chào ${u}</p>
+        </div>
+
+        `;
+
+    }
 
 }
