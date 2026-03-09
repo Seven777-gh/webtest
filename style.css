@@ -1,29 +1,30 @@
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #111;
-    color: white;
+body{
+    margin:0;
+    background:black;
+    color:white;
+    font-family:Arial;
 }
 
-.center {
-    text-align: center;
-    margin-top: 100px;
+.sidebar{
+
+    width:200px;
+    height:100vh;
+    background:#222;
+    position:fixed;
+    padding:10px;
+
 }
 
-input {
-    padding: 10px;
-    margin: 5px;
+.sidebar button{
+
+    width:100%;
+    margin:5px 0;
+
 }
 
-button {
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
-}
+.content{
 
-.box {
-    background: #222;
-    padding: 20px;
-    width: 300px;
-    margin: auto;
+    margin-left:220px;
+    padding:20px;
+
 }
