@@ -1,120 +1,50 @@
 body{
+
 margin:0;
 font-family:Arial;
-background:#0f172a;
+background:#0b1a33;
 color:white;
-}
-
-
-/* ===== CENTER LOGIN ===== */
-
-.loginBox{
-
-width:320px;
-background:#1e293b;
-padding:25px;
-border-radius:12px;
-text-align:center;
-box-shadow:0 0 15px black;
-
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
 
 }
 
+#menu{
 
-.loginBox input{
-
-width:100%;
-margin:8px 0;
-padding:10px;
-border:none;
-border-radius:6px;
-
-}
-
-
-button{
-
-padding:10px;
-width:100%;
-border:none;
-background:#3b82f6;
-color:white;
-cursor:pointer;
-border-radius:6px;
-
-}
-
-button:hover{
-
-background:#2563eb;
-
-}
-
-
-/* ===== SIDEBAR ===== */
-
-.sidebar{
-
-width:220px;
+width:200px;
 height:100vh;
-background:#020617;
+background:#111;
+
 position:fixed;
+left:0;
+top:0;
+
 padding:10px;
 
 }
 
-
-.sidebar h2{
-
-color:#38bdf8;
-
-}
-
-
-.sidebar button{
+#menu button{
 
 width:100%;
 margin:5px 0;
-background:#1e293b;
-
-}
-
-
-.sidebar button:hover{
-
-background:#334155;
-
-}
-
-
-/* ===== HEADER ===== */
-
-.header{
-
-margin-left:220px;
-background:#020617;
 padding:10px;
-border-bottom:1px solid #334155;
 
 }
 
+#main{
 
-/* ===== CONTENT ===== */
-
-.content{
-
-margin-left:220px;
+margin-left:210px;
 padding:20px;
 
 }
 
+input{
 
-h1{
+padding:10px;
+margin:5px;
 
-color:#38bdf8;
+}
+
+button{
+
+cursor:pointer;
 
 }
