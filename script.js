@@ -1,33 +1,3 @@
-// ===== LOGIN =====
-
-function login(){
-
-var u = document.getElementById("user").value;
-var p = document.getElementById("pass").value;
-
-if(u=="admin" && p=="123"){
-
-localStorage.setItem("login","yes");
-
-location.reload();
-
-}else{
-
-alert("Sai");
-
-}
-
-}
-
-
-// ===== CHECK LOGIN =====
-
-if(localStorage.getItem("login")=="yes"){
-
-showAdmin();
-
-}
-
 
 // ===== DATABASE =====
 
@@ -47,25 +17,34 @@ localStorage.setItem("db",JSON.stringify(db));
 }
 
 
-// ===== ADMIN UI =====
+// ===== ROUTER =====
 
-function showAdmin(){
+function go(page){
 
-document.body.innerHTML = `
+localStorage.setItem("page",page);
 
-<h2>ADMIN</h2>
+render();
 
-<button onclick="logout()">Logout</button>
+}
 
-<button onclick="addUser()">Add User</button>
 
-<button onclick="addPost()">Add Post</button>
+// ===== LOGIN =====
 
-<button onclick="showData()">Data</button>
+function login(){
 
-<div id="out"></div>
+var u = document.getElementById("user").value;
+var p = document.getElementById("pass").value;
 
-`;
+if(u=="admin" && p=="123"){
+
+localStorage.setItem("login","yes");
+go("home");
+
+}else{
+
+alert("Sai");
+
+}
 
 }
 
@@ -75,8 +54,113 @@ document.body.innerHTML = `
 function logout(){
 
 localStorage.clear();
-
 location.reload();
+
+}
+
+
+// ===== RENDER =====
+
+function render(){
+
+if(localStorage.getItem("login")!="yes"){
+
+showLogin();
+return;
+
+}
+
+var page = localStorage.getItem("page") || "home";
+
+document.getElementById("app").innerHTML =
+
+menu() +
+
+`<div id="main">`+
+
+pages(page)+
+
+`</div>`;
+
+}
+
+
+// ===== MENU =====
+
+function menu(){
+
+return `
+
+<div id="menu">
+
+<h3>ADMIN</h3>
+
+<button onclick="go('home')">Home</button>
+
+<button onclick="go('users')">Users</button>
+
+<button onclick="go('posts')">Posts</button>
+
+<button onclick="go('data')">Data</button>
+
+<button onclick="logout()">Logout</button>
+
+</div>
+
+`;
+
+}
+
+
+// ===== PAGES =====
+
+function pages(p){
+
+if(p=="home"){
+
+return "<h2>Home</h2>";
+
+}
+
+if(p=="users"){
+
+return `
+
+<h2>Users</h2>
+
+<button onclick="addUser()">Add</button>
+
+<pre>${JSON.stringify(db.users,null,2)}</pre>
+
+`;
+
+}
+
+if(p=="posts"){
+
+return `
+
+<h2>Posts</h2>
+
+<button onclick="addPost()">Add</button>
+
+<pre>${JSON.stringify(db.posts,null,2)}</pre>
+
+`;
+
+}
+
+if(p=="data"){
+
+return `
+
+<h2>Database</h2>
+
+<pre>${JSON.stringify(db,null,2)}</pre>
+
+`;
+
+}
 
 }
 
@@ -85,19 +169,15 @@ location.reload();
 
 function addUser(){
 
-var name = prompt("Tên user");
+var name = prompt("Tên");
 
 if(!name) return;
 
-db.users.push({
-
-name:name
-
-});
+db.users.push({name:name});
 
 saveDB();
 
-alert("Đã thêm user");
+render();
 
 }
 
@@ -106,29 +186,38 @@ alert("Đã thêm user");
 
 function addPost(){
 
-var title = prompt("Tiêu đề");
+var t = prompt("Title");
 
-if(!title) return;
+if(!t) return;
 
-db.posts.push({
-
-title:title
-
-});
+db.posts.push({title:t});
 
 saveDB();
 
-alert("Đã thêm post");
+render();
 
 }
 
 
-// ===== SHOW DATA =====
+// ===== LOGIN UI =====
 
-function showData(){
+function showLogin(){
 
-document.getElementById("out").innerHTML =
+document.getElementById("app").innerHTML = `
 
-"<pre>"+JSON.stringify(db,null,2)+"</pre>";
+<h2>Login</h2>
+
+<input id="user" placeholder="user">
+
+<input id="pass" type="password">
+
+<button onclick="login()">Login</button>
+
+`;
 
 }
+
+
+// ===== START =====
+
+render();
