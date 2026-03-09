@@ -1,10 +1,11 @@
-console.log("script chạy");
 // ===== DATABASE =====
 
 var db = JSON.parse(localStorage.getItem("db")) || {
 
 users:[],
-posts:[]
+posts:[],
+uid:1,
+pid:1
 
 };
 
@@ -96,13 +97,9 @@ return `
 <h3>ADMIN</h3>
 
 <button onclick="go('home')">Home</button>
-
 <button onclick="go('users')">Users</button>
-
 <button onclick="go('posts')">Posts</button>
-
 <button onclick="go('data')">Data</button>
-
 <button onclick="logout()">Logout</button>
 
 </div>
@@ -122,19 +119,49 @@ return "<h2>Home</h2>";
 
 }
 
+
 if(p=="users"){
 
 return `
 
 <h2>Users</h2>
 
-<button onclick="addUser()">Add</button>
+<button onclick="addUser()">Add User</button>
 
-<pre>${JSON.stringify(db.users,null,2)}</pre>
+<table border="1" cellpadding="5">
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Action</th>
+</tr>
+
+${db.users.map(u=>`
+
+<tr>
+
+<td>${u.id}</td>
+
+<td>${u.name}</td>
+
+<td>
+
+<button onclick="editUser(${u.id})">Edit</button>
+
+<button onclick="deleteUser(${u.id})">Delete</button>
+
+</td>
+
+</tr>
+
+`).join("")}
+
+</table>
 
 `;
 
 }
+
 
 if(p=="posts"){
 
@@ -142,30 +169,53 @@ return `
 
 <h2>Posts</h2>
 
-<button onclick="addPost()">Add</button>
+<button onclick="addPost()">Add Post</button>
 
-<pre>${JSON.stringify(db.posts,null,2)}</pre>
+<table border="1" cellpadding="5">
+
+<tr>
+<th>ID</th>
+<th>Title</th>
+<th>Action</th>
+</tr>
+
+${db.posts.map(p=>`
+
+<tr>
+
+<td>${p.id}</td>
+
+<td>${p.title}</td>
+
+<td>
+
+<button onclick="editPost(${p.id})">Edit</button>
+
+<button onclick="deletePost(${p.id})">Delete</button>
+
+</td>
+
+</tr>
+
+`).join("")}
+
+</table>
 
 `;
 
 }
+
 
 if(p=="data"){
 
-return `
-
-<h2>Database</h2>
-
-<pre>${JSON.stringify(db,null,2)}</pre>
-
-`;
+return "<pre>"+JSON.stringify(db,null,2)+"</pre>";
 
 }
 
 }
 
 
-// ===== ADD USER =====
+// ===== USER =====
 
 function addUser(){
 
@@ -173,16 +223,48 @@ var name = prompt("Tên");
 
 if(!name) return;
 
-db.users.push({name:name});
+db.users.push({
+
+id:db.uid++,
+name:name
+
+});
 
 saveDB();
-
 render();
 
 }
 
 
-// ===== ADD POST =====
+function editUser(id){
+
+var u = db.users.find(x=>x.id==id);
+
+var name = prompt("Tên mới",u.name);
+
+if(!name) return;
+
+u.name = name;
+
+saveDB();
+render();
+
+}
+
+
+function deleteUser(id){
+
+if(!confirm("Xóa?")) return;
+
+db.users = db.users.filter(x=>x.id!=id);
+
+saveDB();
+render();
+
+}
+
+
+// ===== POST =====
 
 function addPost(){
 
@@ -190,10 +272,42 @@ var t = prompt("Title");
 
 if(!t) return;
 
-db.posts.push({title:t});
+db.posts.push({
+
+id:db.pid++,
+title:t
+
+});
 
 saveDB();
+render();
 
+}
+
+
+function editPost(id){
+
+var p = db.posts.find(x=>x.id==id);
+
+var t = prompt("Title",p.title);
+
+if(!t) return;
+
+p.title = t;
+
+saveDB();
+render();
+
+}
+
+
+function deletePost(id){
+
+if(!confirm("Xóa?")) return;
+
+db.posts = db.posts.filter(x=>x.id!=id);
+
+saveDB();
 render();
 
 }
@@ -221,4 +335,3 @@ document.getElementById("app").innerHTML = `
 // ===== START =====
 
 render();
-
